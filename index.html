@@ -253,7 +253,29 @@
     display:flex; align-items:center; justify-content: space-between;
   }
   .chart-card h3 .tiny{ font-family:'Inter',sans-serif; font-size: 0.68rem; text-transform:uppercase; letter-spacing:1px; color: var(--ink-faint); font-weight:600; }
-  .chart-card canvas{ max-height: 260px; }
+  .chart-card canvas{ display:block; }
+  .chart-box{ position: relative; height: 240px; width: 100%; }
+  .chart-box.tall{ height: 260px; }
+
+  /* people */
+  .people-grid{
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px; margin-bottom: 30px;
+  }
+  .people-empty{ color: var(--ink-faint); font-style: italic; font-size: 0.85rem; padding: 6px 2px; }
+  .person-card{
+    background: var(--card); border: 1.5px solid var(--rule); border-radius: var(--radius-sm);
+    padding: 12px 14px; cursor: pointer; text-align: left;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    box-shadow: 0 1px 2px var(--shadow-soft);
+  }
+  .person-card:hover{ transform: translateY(-2px); box-shadow: 0 3px 6px var(--shadow-soft); }
+  .person-card.selected{ border-color: var(--maroon); background: var(--maroon-wash); }
+  .person-card .p-name{ font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .person-card .p-bal{ font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1rem; }
+  .person-card .p-bal.pos{ color: var(--in-deep); }
+  .person-card .p-bal.neg{ color: var(--out-deep); }
+  .person-card .p-tag{ font-size: 0.65rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
   /* toolbar */
   .toolbar{ display:flex; justify-content: space-between; align-items:center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
@@ -311,17 +333,64 @@
   @keyframes popin{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform: translateY(0); } }
   .party-row-new{ animation: popin 0.3s ease; }
 
+  .ledger-wrap{ overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
   @media (max-width: 640px){
-    body{ padding-left: 42px; }
-    body::before{ width: 42px; }
-    .wrap{ padding: 32px 18px 70px; }
-    header.top h1{ font-size: 1.7rem; }
-    .grand-total .amt{ font-size: 1.5rem; }
-    table.ledger{ font-size: 0.76rem; }
-    table.ledger td, table.ledger thead th{ padding: 8px 8px; }
-    .charts{ flex-direction: column; }
-    .entry-form{ padding: 14px; }
-    .brand-mark{ width: 38px; height: 38px; }
+    body{ padding-left: 14px; padding-right: 14px; }
+    body::before{ display: none; }
+    .wrap{ padding: 20px 0 100px; max-width: 100%; }
+    header.top{ padding-bottom: 12px; margin-bottom: 6px; }
+    header.top h1{ font-size: 1.5rem; }
+    header.top h1 span{ font-size: 0.62rem; letter-spacing: 2px; }
+    .brand-mark{ width: 36px; height: 36px; }
+    .brand-mark span{ width: 30px; height: 30px; font-size: 1rem; }
+    .top-right{ gap: 8px; }
+    .sync-status{ font-size: 0.62rem; padding: 5px 9px; }
+    .theme-toggle{ width: 36px; height: 36px; font-size: 0.95rem; }
+    .grand-total .amt{ font-size: 1.4rem; }
+    .streak-line{ font-size: 0.68rem; gap: 10px; margin: 8px 0 18px; }
+
+    .summary{ gap: 8px; margin-bottom: 18px; }
+    .summary .card{ min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); padding: 12px 14px; }
+    .summary .card .val{ font-size: 1.15rem; }
+
+    .goal-card{ padding: 14px 16px; margin-bottom: 18px; }
+    .goal-top input{ width: 100px; }
+
+    /* stacked, thumb-friendly entry form */
+    .entry-form{
+      flex-direction: column; gap: 8px; padding: 14px;
+      position: sticky; bottom: 10px; z-index: 5;
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+    .type-toggle{ width: 100%; }
+    .type-toggle button{ flex: 1; padding: 12px; font-size: 0.9rem; }
+    .entry-form select, .entry-form input{ width: 100% !important; font-size: 16px; padding: 12px 13px; }
+    .entry-form button.submit-btn{ width: 100%; padding: 13px; font-size: 0.95rem; }
+    .form-hint{ margin-bottom: 20px; font-size: 0.68rem; text-align: center; }
+
+    .people-grid{ grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin-bottom: 20px; }
+    .person-card{ padding: 10px 12px; }
+    .person-card .p-name{ font-size: 0.8rem; }
+    .person-card .p-bal{ font-size: 0.88rem; }
+
+    .charts{ flex-direction: column; gap: 14px; margin-bottom: 20px; }
+    .chart-card{ padding: 14px 16px; min-width: 0; }
+    .chart-box{ height: 210px; }
+
+    .toolbar{ margin-bottom: 10px; }
+    .toolbar h2{ font-size: 1.15rem; }
+    .toolbar-actions{ width: 100%; }
+    .btn-secondary{ flex: 1; justify-content: center; padding: 11px 12px; font-size: 0.78rem; }
+
+    .filters{ gap: 8px; margin-bottom: 14px; }
+    .filters input[type="search"]{ flex-basis: 100%; }
+    .filters select{ flex: 1; min-width: 0; }
+    .filters .chip{ padding: 9px 13px; }
+
+    table.ledger{ font-size: 0.76rem; min-width: 560px; }
+    table.ledger td, table.ledger thead th{ padding: 9px 10px; }
+    td.reason{ max-width: 120px; }
   }
   :focus-visible{ outline: 2px solid var(--maroon); outline-offset: 2px; }
 </style>
@@ -366,7 +435,8 @@
       <button type="button" class="active-hidden out" data-type="out">↑ Out</button>
     </div>
     <select name="category" id="categorySelect"></select>
-    <input type="text" name="party" placeholder="From / To" required>
+    <input type="text" name="party" placeholder="From / To" list="peopleList" required>
+    <datalist id="peopleList"></datalist>
     <input type="text" name="reason" placeholder="Reason / note" required>
     <input type="number" name="amount" placeholder="Amount" min="0" step="0.01" required>
     <input type="date" name="date" required>
@@ -382,17 +452,23 @@
   <div class="charts">
     <div class="chart-card">
       <h3>Balance over time <span class="tiny">running total</span></h3>
-      <canvas id="balanceChart"></canvas>
+      <div class="chart-box"><canvas id="balanceChart"></canvas></div>
     </div>
     <div class="chart-card">
       <h3>Spending by category <span class="tiny">this filter</span></h3>
-      <canvas id="expenseChart"></canvas>
+      <div class="chart-box"><canvas id="expenseChart"></canvas></div>
     </div>
     <div class="chart-card wide">
       <h3>In vs out, by month <span class="tiny">last 6 months</span></h3>
-      <canvas id="monthlyChart"></canvas>
+      <div class="chart-box tall"><canvas id="monthlyChart"></canvas></div>
     </div>
   </div>
+
+  <div class="toolbar" style="margin-top:6px;">
+    <h2>People</h2>
+    <div class="toolbar-actions"><span class="form-hint" style="margin:0;">Tap a person to filter the ledger below</span></div>
+  </div>
+  <div class="people-grid" id="peopleGrid"></div>
 
   <div class="toolbar">
     <h2>Ledger</h2>
@@ -553,6 +629,7 @@ let entries = loadData(); // {id, date, type, category, party, reason, amount, r
 let currentType = 'in';
 let sortKey = 'date';
 let sortDir = 1;
+let selectedPerson = null;
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function fmt(n){
@@ -653,6 +730,7 @@ function getFiltered(){
     if(cat && e.category !== cat) return false;
     if(month && monthKey(e.date) !== month) return false;
     if(typeFilter && e.type !== typeFilter) return false;
+    if(selectedPerson && e.party !== selectedPerson) return false;
     return true;
   });
 }
@@ -675,6 +753,42 @@ document.querySelectorAll('th[data-sort]').forEach(th => {
     if(sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
     render(false);
   });
+});
+
+function renderPeople(){
+  const grid = document.getElementById('peopleGrid');
+  const byPerson = {};
+  entries.forEach(e => {
+    if(!byPerson[e.party]) byPerson[e.party] = { in: 0, out: 0, last: e.date };
+    byPerson[e.party][e.type] += e.amount;
+    if(e.date > byPerson[e.party].last) byPerson[e.party].last = e.date;
+  });
+  const people = Object.entries(byPerson).map(([name, v]) => ({
+    name, balance: v.in - v.out, last: v.last
+  })).sort((a,b) => Math.abs(b.balance) - Math.abs(a.balance));
+
+  if(people.length === 0){
+    grid.innerHTML = `<div class="people-empty">No people yet — add an entry with a "From / To" name and they'll show up here.</div>`;
+    return;
+  }
+
+  grid.innerHTML = people.map(p => `
+    <button type="button" class="person-card ${selectedPerson === p.name ? 'selected' : ''}" data-person="${escapeHtml(p.name)}">
+      <div class="p-name">${escapeHtml(p.name)}</div>
+      <div class="p-bal ${p.balance >= 0 ? 'pos' : 'neg'}">${fmt(p.balance)}</div>
+      <div class="p-tag">${p.balance >= 0 ? 'received more' : 'sent more'} · ${formatDate(p.last)}</div>
+    </button>
+  `).join('');
+
+  const dl = document.getElementById('peopleList');
+  if(dl) dl.innerHTML = people.map(p => `<option value="${escapeHtml(p.name)}">`).join('');
+}
+
+document.getElementById('peopleGrid').addEventListener('click', e => {
+  const btn = e.target.closest('[data-person]');
+  if(!btn) return;
+  selectedPerson = selectedPerson === btn.dataset.person ? null : btn.dataset.person;
+  render(false);
 });
 
 /* ---------- render ---------- */
@@ -762,6 +876,7 @@ function render(recompute = true){
   lastMilestone = milestoneNow;
 
   renderGoal();
+  renderPeople();
   renderCharts(filtered, allSorted);
 }
 
@@ -840,7 +955,7 @@ function renderCharts(filtered, allSortedIn){
       }]
     },
     options: {
-      responsive: true,
+      responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
         x: { grid: { display: false }, ticks: { maxTicksLimit: 6, color: colors.ink } },
@@ -868,7 +983,7 @@ function renderCharts(filtered, allSortedIn){
       }]
     },
     options: {
-      responsive: true, cutout: '62%',
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
       plugins: { legend: { position: 'bottom', labels: { boxWidth: 11, padding: 9, font: { size: 10.5 }, color: colors.ink } } }
     }
   });
@@ -893,7 +1008,7 @@ function renderCharts(filtered, allSortedIn){
       ]
     },
     options: {
-      responsive: true,
+      responsive: true, maintainAspectRatio: false,
       plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 11, color: colors.ink } } },
       scales: {
         x: { grid: { display: false }, ticks: { color: colors.ink } },
